@@ -8,105 +8,106 @@
 </head>
 <body>
 
-<header>
-  <h1>SchoolTracker Pro</h1>
-  <div class="last-update">Last updated: <span id="lastUpdate">--:--:--</span></div>
-</header>
+  <!-- Header -->
+  <header class="app-header">
+    <div class="logo-section">
+      <div class="logo-icon">🚌</div>
+      <div>
+        <h1>SchoolTracker Pro</h1>
+        <p class="tagline">Real-Time Bus Tracking System</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="last-update">Last updated: <span id="lastUpdate">--:--:--</span></div>
+      <button class="settings-btn" title="Settings">⚙️</button>
+    </div>
+  </header>
 
-<nav>
-  <button class="active" onclick="showView('overview')">Overview</button>
-  <button onclick="showView('buses')">Bus Fleet</button>
-  <button onclick="showView('students')">Students</button>
-  <button onclick="showView('alerts')">Alerts</button>
-</nav>
+  <!-- Navigation -->
+  <nav class="main-nav">
+    <button class="active" onclick="showView('overview')">Overview</button>
+    <button onclick="showView('buses')">Bus Fleet</button>
+    <button onclick="showView('students')">Students</button>
+    <button onclick="showView('alerts')">Alerts <span id="alertCount" class="badge"></span></button>
+  </nav>
 
-<!-- Overview -->
-<div id="overview" class="view active">
-  <div class="stats-grid">
-    <div class="card"><h3>Total Buses</h3><p id="statTotalBuses">0</p></div>
-    <div class="card"><h3>Active Routes</h3><p id="statActiveBuses">0</p></div>
-    <div class="card"><h3>Students Tracking</h3><p id="statTotalStudents">0</p></div>
-    <div class="card"><h3>Delays</h3><p id="statDelayedBuses">0</p></div>
-  </div>
-</div>
+  <!-- Main Content -->
+  <main class="content">
 
-<!-- Bus Fleet -->
-<div id="buses" class="view">
-  <div class="bus-list" id="busList"></div>
-</div>
+    <!-- Overview Page -->
+    <section id="overview" class="view active">
+      <div class="stats-grid">
+        <div class="stats-card blue">
+          <div class="stats-icon">🚌</div>
+          <div>
+            <h3>Total Buses</h3>
+            <p id="statTotalBuses">0</p>
+            <span>Fleet size</span>
+          </div>
+        </div>
+        <div class="stats-card green">
+          <div class="stats-icon">📍</div>
+          <div>
+            <h3>Active Routes</h3>
+            <p id="statActiveBuses">0</p>
+            <span>Currently on route</span>
+          </div>
+        </div>
+        <div class="stats-card purple">
+          <div class="stats-icon">👥</div>
+          <div>
+            <h3>Students Tracking</h3>
+            <p id="statTotalStudents">0</p>
+            <span>Total enrolled</span>
+          </div>
+        </div>
+        <div class="stats-card yellow">
+          <div class="stats-icon">⚠️</div>
+          <div>
+            <h3>Delays</h3>
+            <p id="statDelayedBuses">0</p>
+            <span>Behind schedule</span>
+          </div>
+        </div>
+      </div>
 
-<!-- Students -->
-<div id="students" class="view">
-  <p>List of students will be here...</p>
-</div>
+      <div class="overview-main">
+        <div class="map-container">
+          <h2>Live Bus Map</h2>
+          <div class="map-placeholder">
+            Map will be here
+          </div>
+        </div>
+        <div class="notifications-panel">
+          <h2>Recent Alerts</h2>
+          <ul id="recentAlerts"></ul>
+        </div>
+      </div>
+    </section>
 
-<!-- Alerts -->
-<div id="alerts" class="view">
-  <p>No alerts at this time.</p>
-</div>
+    <!-- Bus Fleet Page -->
+    <section id="buses" class="view">
+      <div class="search-bar">
+        <input type="text" id="busSearch" placeholder="Search buses, drivers, or routes...">
+        <button id="filterBtn">🔍 Filter</button>
+      </div>
+      <div id="busList" class="bus-list"></div>
+    </section>
 
-<script>
-  // Mock Data
-  let buses = [
-    { id: 1, number: 'Bus 101', driver: 'John Doe', route: 'Route A', status: 'on-route', currentLocation: { lat: 40, lng: -74 } },
-    { id: 2, number: 'Bus 202', driver: 'Jane Smith', route: 'Route B', status: 'delayed', currentLocation: { lat: 40.1, lng: -74.1 } },
-    { id: 3, number: 'Bus 303', driver: 'Mike Lee', route: 'Route C', status: 'idle', currentLocation: { lat: 39.9, lng: -74.05 } },
-  ];
-  let students = [{ name: "Alice" }, { name: "Bob" }, { name: "Charlie" }];
+    <!-- Students Page -->
+    <section id="students" class="view">
+      <h2>Student List</h2>
+      <ul id="studentList" class="student-list"></ul>
+    </section>
 
-  function updateStats() {
-    document.getElementById('statTotalBuses').textContent = buses.length;
-    document.getElementById('statActiveBuses').textContent = buses.filter(b => b.status === 'on-route').length;
-    document.getElementById('statTotalStudents').textContent = students.length;
-    document.getElementById('statDelayedBuses').textContent = buses.filter(b => b.status === 'delayed').length;
-  }
+    <!-- Alerts Page -->
+    <section id="alerts" class="view">
+      <h2>All Alerts</h2>
+      <ul id="allAlerts" class="alert-list"></ul>
+    </section>
 
-  function renderBuses() {
-    const busList = document.getElementById('busList');
-    busList.innerHTML = '';
-    buses.forEach(bus => {
-      const div = document.createElement('div');
-      div.className = 'bus-card';
-      div.innerHTML = `
-        <h4>${bus.number}</h4>
-        <p>Driver: ${bus.driver}</p>
-        <p>Route: ${bus.route}</p>
-        <span class="status ${bus.status}">${bus.status}</span>
-      `;
-      busList.appendChild(div);
-    });
-  }
+  </main>
 
-  function updateTime() {
-    document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
-  }
-
-  // Simulate location updates
-  setInterval(() => {
-    buses = buses.map(bus => ({
-      ...bus,
-      currentLocation: {
-        lat: bus.currentLocation.lat + (Math.random() - 0.5) * 0.001,
-        lng: bus.currentLocation.lng + (Math.random() - 0.5) * 0.001
-      }
-    }));
-    updateStats();
-    renderBuses();
-    updateTime();
-  }, 5000);
-
-  function showView(viewId) {
-    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-    document.getElementById(viewId).classList.add('active');
-    event.target.classList.add('active');
-  }
-
-  // Init
-  updateStats();
-  renderBuses();
-  updateTime();
-</script>
-
+  <script src="script.js"></script>
 </body>
 </html>

@@ -1,11 +1,9 @@
-// =======================
 // Mock Data
-// =======================
 let buses = [
-  { id: 1, number: "Bus 101", driver: "John Smith", route: "North Zone", status: "on-route" },
-  { id: 2, number: "Bus 102", driver: "Mary Johnson", route: "East Zone", status: "delayed" },
-  { id: 3, number: "Bus 103", driver: "James Brown", route: "South Zone", status: "idle" },
-  { id: 4, number: "Bus 104", driver: "Patricia Miller", route: "West Zone", status: "on-route" }
+  { id: 1, number: "Bus 101", driver: "John Smith", route: "North Zone", status: "on-route", lat: 28.6139, lng: 77.2090 },
+  { id: 2, number: "Bus 102", driver: "Mary Johnson", route: "East Zone", status: "delayed", lat: 28.7041, lng: 77.1025 },
+  { id: 3, number: "Bus 103", driver: "James Brown", route: "South Zone", status: "idle", lat: 28.5355, lng: 77.3910 },
+  { id: 4, number: "Bus 104", driver: "Patricia Miller", route: "West Zone", status: "on-route", lat: 28.4595, lng: 77.0266 }
 ];
 
 let students = [
@@ -22,51 +20,49 @@ let alerts = [
   { id: 3, message: "Bus 101 has completed its route", read: true }
 ];
 
-// =======================
-// Map Setup
-// =======================
+// Global variables
 let map;
 let busMarkers = {};
 
+// Initialize map
 function initMap() {
-  map = L.map('map').setView([12.9716, 77.5946], 13);
-
+  map = L.map('map').setView([28.6139, 77.2090], 11);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors'
+    attribution: '© OpenStreetMap contributors'
   }).addTo(map);
 
   buses.forEach(bus => {
-    let marker = L.marker(getRandomLocation())
+    let marker = L.marker([bus.lat, bus.lng])
       .addTo(map)
-      .bindPopup(`<b>${bus.number}</b><br>Driver: ${bus.driver}<br>Status: ${bus.status}`);
+      .bindPopup(`<b>${bus.number}</b><br>Driver: ${bus.driver}<br>Route: ${bus.route}`);
     busMarkers[bus.id] = marker;
   });
 }
 
-function getRandomLocation() {
-  let lat = 12.9716 + (Math.random() - 0.5) * 0.05;
-  let lng = 77.5946 + (Math.random() - 0.5) * 0.05;
-  return [lat, lng];
-}
+// Smoothly move marker from old position to new
+function smoothMoveMarker(marker, newLat, newLng, duration = 2000) {
+  const startPos = marker.getLatLng();
+  const startTime = performance.now();
 
-function updateMapMarkers() {
-  buses.forEach(bus => {
-    let marker = busMarkers[bus.id];
-    if (marker) {
-      let newLatLng = getRandomLocation();
-      marker.setLatLng(newLatLng);
-      marker.setPopupContent(`<b>${bus.number}</b><br>Driver: ${bus.driver}<br>Status: ${bus.status}`);
+  function animate(time) {
+    const progress = Math.min((time - startTime) / duration, 1);
+    const lat = startPos.lat + (newLat - startPos.lat) * progress;
+    const lng = startPos.lng + (newLng - startPos.lng) * progress;
+    marker.setLatLng([lat, lng]);
+    if (progress < 1) {
+      requestAnimationFrame(animate);
     }
-  });
+  }
+
+  requestAnimationFrame(animate);
 }
 
-// =======================
-// Utility Functions
-// =======================
+// Update time
 function updateLastUpdateTime() {
   document.getElementById("lastUpdate").textContent = new Date().toLocaleTimeString();
 }
 
+// Render Stats
 function renderStats() {
   document.getElementById("statTotalBuses").textContent = buses.length;
   document.getElementById("statActiveBuses").textContent = buses.filter(b => b.status === "on-route").length;
@@ -74,6 +70,7 @@ function renderStats() {
   document.getElementById("statDelayedBuses").textContent = buses.filter(b => b.status === "delayed").length;
 }
 
+// Render Bus List
 function renderBusList(filter = "") {
   const list = document.getElementById("busList");
   list.innerHTML = "";
@@ -96,37 +93,32 @@ function renderBusList(filter = "") {
     });
 }
 
+// Render Student List
 function renderStudentList() {
   const list = document.getElementById("studentList");
   list.innerHTML = "";
   students.forEach(student => {
     const li = document.createElement("li");
-    li.innerHTML = `
-      <span>${student.name}</span>
-      <span>${student.bus}</span>
-    `;
+    li.innerHTML = `<span>${student.name}</span><span>${student.bus}</span>`;
     list.appendChild(li);
   });
 }
 
+// Render Alerts
 function renderAlerts() {
   const allList = document.getElementById("allAlerts");
   const recentList = document.getElementById("recentAlerts");
   const alertCount = alerts.filter(a => !a.read).length;
-
-  const badge = document.getElementById("alertCount");
-  badge.textContent = alertCount > 0 ? alertCount : "";
+  document.getElementById("alertCount").textContent = alertCount > 0 ? alertCount : "";
 
   allList.innerHTML = "";
   alerts.forEach(alert => {
     const li = document.createElement("li");
-    li.innerHTML = `
-      <span>${alert.message}</span>
+    li.innerHTML = `<span>${alert.message}</span>
       <div class="alert-actions">
         <button onclick="markAsRead(${alert.id})">Mark as Read</button>
         <button onclick="dismissAlert(${alert.id})">Dismiss</button>
-      </div>
-    `;
+      </div>`;
     allList.appendChild(li);
   });
 
@@ -138,9 +130,7 @@ function renderAlerts() {
   });
 }
 
-// =======================
-// Actions
-// =======================
+// Alert Actions
 function markAsRead(id) {
   alerts = alerts.map(a => a.id === id ? { ...a, read: true } : a);
   renderAlerts();
@@ -151,50 +141,33 @@ function dismissAlert(id) {
   renderAlerts();
 }
 
-// =======================
 // Navigation
-// =======================
 function showView(viewId) {
   document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
   document.getElementById(viewId).classList.add("active");
-
   document.querySelectorAll(".main-nav button").forEach(b => b.classList.remove("active"));
   event.target.classList.add("active");
 }
 
-// =======================
-// Real-time Simulation
-// =======================
+// Simulate movement
 function simulateBusUpdates() {
-  buses = buses.map(bus => {
-    if (Math.random() > 0.8) {
-      const statuses = ["on-route", "delayed", "idle"];
-      bus.status = statuses[Math.floor(Math.random() * statuses.length)];
-    }
-    return bus;
+  buses.forEach(bus => {
+    const newLat = bus.lat + (Math.random() - 0.5) * 0.005;
+    const newLng = bus.lng + (Math.random() - 0.5) * 0.005;
+    bus.lat = newLat;
+    bus.lng = newLng;
+    smoothMoveMarker(busMarkers[bus.id], newLat, newLng, 2000);
   });
-  renderStats();
-  renderBusList(document.getElementById("busSearch").value);
-  updateMapMarkers();
 }
 
-// =======================
-// Event Listeners
-// =======================
-document.getElementById("busSearch").addEventListener("input", e => {
-  renderBusList(e.target.value);
-});
-
-// =======================
-// Init
-// =======================
+// Init App
 function init() {
+  initMap();
   updateLastUpdateTime();
   renderStats();
   renderBusList();
   renderStudentList();
   renderAlerts();
-  initMap();
 
   setInterval(() => {
     updateLastUpdateTime();
@@ -202,4 +175,4 @@ function init() {
   }, 5000);
 }
 
-init();
+document.addEventListener("DOMContentLoaded", init);

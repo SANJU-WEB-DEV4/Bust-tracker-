@@ -23,6 +23,44 @@ let alerts = [
 ];
 
 // =======================
+// Map Setup
+// =======================
+let map;
+let busMarkers = {};
+
+function initMap() {
+  map = L.map('map').setView([12.9716, 77.5946], 13);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  buses.forEach(bus => {
+    let marker = L.marker(getRandomLocation())
+      .addTo(map)
+      .bindPopup(`<b>${bus.number}</b><br>Driver: ${bus.driver}<br>Status: ${bus.status}`);
+    busMarkers[bus.id] = marker;
+  });
+}
+
+function getRandomLocation() {
+  let lat = 12.9716 + (Math.random() - 0.5) * 0.05;
+  let lng = 77.5946 + (Math.random() - 0.5) * 0.05;
+  return [lat, lng];
+}
+
+function updateMapMarkers() {
+  buses.forEach(bus => {
+    let marker = busMarkers[bus.id];
+    if (marker) {
+      let newLatLng = getRandomLocation();
+      marker.setLatLng(newLatLng);
+      marker.setPopupContent(`<b>${bus.number}</b><br>Driver: ${bus.driver}<br>Status: ${bus.status}`);
+    }
+  });
+}
+
+// =======================
 // Utility Functions
 // =======================
 function updateLastUpdateTime() {
@@ -76,11 +114,9 @@ function renderAlerts() {
   const recentList = document.getElementById("recentAlerts");
   const alertCount = alerts.filter(a => !a.read).length;
 
-  // Badge count
   const badge = document.getElementById("alertCount");
   badge.textContent = alertCount > 0 ? alertCount : "";
-  
-  // All alerts
+
   allList.innerHTML = "";
   alerts.forEach(alert => {
     const li = document.createElement("li");
@@ -94,7 +130,6 @@ function renderAlerts() {
     allList.appendChild(li);
   });
 
-  // Recent alerts (max 5)
   recentList.innerHTML = "";
   alerts.slice(0, 5).forEach(alert => {
     const li = document.createElement("li");
@@ -133,7 +168,6 @@ function showView(viewId) {
 function simulateBusUpdates() {
   buses = buses.map(bus => {
     if (Math.random() > 0.8) {
-      // Randomly change status
       const statuses = ["on-route", "delayed", "idle"];
       bus.status = statuses[Math.floor(Math.random() * statuses.length)];
     }
@@ -141,6 +175,7 @@ function simulateBusUpdates() {
   });
   renderStats();
   renderBusList(document.getElementById("busSearch").value);
+  updateMapMarkers();
 }
 
 // =======================
@@ -159,6 +194,7 @@ function init() {
   renderBusList();
   renderStudentList();
   renderAlerts();
+  initMap();
 
   setInterval(() => {
     updateLastUpdateTime();

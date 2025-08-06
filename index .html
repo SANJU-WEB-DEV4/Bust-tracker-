@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SchoolTracker Pro</title>
-  <link rel="stylesheet" href="style.css">
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Leaflet Map CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 </head>
 <body>
 
@@ -74,9 +79,7 @@
       <div class="overview-main">
         <div class="map-container">
           <h2>Live Bus Map</h2>
-          <div class="map-placeholder">
-            Map will be here
-          </div>
+          <div id="map"></div>
         </div>
         <div class="notifications-panel">
           <h2>Recent Alerts</h2>
@@ -108,6 +111,10 @@
 
   </main>
 
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <!-- App JS -->
   <script src="script.js"></script>
 </body>
 </html>

@@ -1,6 +1,3 @@
-/* =========================
-   GLOBAL STYLES
-========================= */
 :root {
   --blue: #2563eb;
   --green: #16a34a;
@@ -25,9 +22,7 @@ body {
   line-height: 1.5;
 }
 
-/* =========================
-   HEADER
-========================= */
+/* HEADER */
 .app-header {
   background: var(--white);
   border-bottom: 1px solid var(--border);
@@ -83,9 +78,7 @@ body {
   font-size: 1.25rem;
 }
 
-/* =========================
-   NAVIGATION
-========================= */
+/* NAVIGATION */
 .main-nav {
   background: var(--white);
   border-bottom: 1px solid var(--border);
@@ -124,9 +117,7 @@ body {
   margin-left: 5px;
 }
 
-/* =========================
-   MAIN CONTENT
-========================= */
+/* CONTENT */
 .content {
   padding: 1rem;
 }
@@ -139,9 +130,7 @@ body {
   display: block;
 }
 
-/* =========================
-   STATS CARDS
-========================= */
+/* STATS */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -183,9 +172,7 @@ body {
 .stats-card.purple .stats-icon { color: var(--purple); }
 .stats-card.yellow .stats-icon { color: var(--yellow); }
 
-/* =========================
-   OVERVIEW LAYOUT
-========================= */
+/* OVERVIEW */
 .overview-main {
   display: grid;
   grid-template-columns: 2fr 1fr;
@@ -198,13 +185,9 @@ body {
   border-radius: 8px;
 }
 
-.map-placeholder {
-  background: #e5e7eb;
+#map {
   height: 300px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #6b7280;
+  width: 100%;
   border-radius: 6px;
 }
 
@@ -220,137 +203,7 @@ body {
   font-size: 0.9rem;
 }
 
-/* =========================
-   BUS LIST
-========================= */
-.search-bar {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-.search-bar input {
-  flex: 1;
-  padding: 0.5rem;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-}
-
-.search-bar button {
-  padding: 0.5rem 1rem;
-  background: var(--blue);
-  color: var(--white);
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.bus-list {
-  
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 1rem;
-}
-
-.bus-card {
-  background: var(--white);
-  border-radius: 8px;
-  padding: 1rem;
-  border: 1px solid var(--border);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-}
-
-.bus-card h4 {
-  font-size: 1.1rem;
-  margin-bottom: 0.5rem;
-}
-
-.bus-card p {
-  font-size: 0.9rem;
-  color: #6b7280;
-  margin-bottom: 0.25rem;
-}
-
-.status {
-  display: inline-block;
-  font-size: 0.75rem;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-weight: 500;
-}
-
-.status.on-route {
-  background: #d1fae5;
-  color: var(--green);
-}
-
-.status.delayed {
-  background: #fee2e2;
-  color: #b91c1c;
-}
-
-.status.idle {
-  background: #e0f2fe;
-  color: #0369a1;
-}
-
-/* =========================
-   STUDENT LIST
-========================= */
-.student-list {
-  list-style: none;
-  background: var(--white);
-  padding: 1rem;
-  border-radius: 8px;
-}
-
-.student-list li {
-  display: flex;
-  justify-content: space-between;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid var(--border);
-  font-size: 0.9rem;
-}
-
-.student-list li:last-child {
-  border-bottom: none;
-}
-
-/* =========================
-   ALERT LIST
-========================= */
-.alert-list {
-  list-style: none;
-  background: var(--white);
-  padding: 1rem;
-  border-radius: 8px;
-}
-
-.alert-list li {
-  padding: 0.5rem;
-  border-bottom: 1px solid var(--border);
-  font-size: 0.9rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.alert-list li:last-child {
-  border-bottom: none;
-}
-
-.alert-actions button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 0.85rem;
-  color: var(--blue);
-  margin-left: 0.5rem;
-}
-
-/* =========================
-   RESPONSIVE DESIGN
-========================= */
+/* RESPONSIVE */
 @media (max-width: 900px) {
   .overview-main {
     grid-template-columns: 1fr;
@@ -365,9 +218,4 @@ body {
     border-bottom: 1px solid var(--border);
     width: 100%;
   }
-}
-#map {
-  height: 300px;
-  width: 100%;
-  border-radius: 6px;
 }
